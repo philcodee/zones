@@ -1,0 +1,17 @@
+# Static site: no build step, serve the prototype folder as-is.
+[build]
+  publish = "prototype"
+  command = ""
+
+# Allow camera access on this origin (Netlify serves HTTPS, which getUserMedia requires).
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Permissions-Policy = "camera=(self)"
+    X-Content-Type-Options = "nosniff"
+
+# Always fetch fresh config so edits to plan.json / rooms.json show up on the next load.
+[[headers]]
+  for = "/*.json"
+  [headers.values]
+    Cache-Control = "no-cache"
