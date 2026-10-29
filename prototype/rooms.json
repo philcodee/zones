@@ -1,0 +1,508 @@
+{
+ "_units": "pixels of 3rd-floor-map.png (3952 x 5194, portrait)",
+ "rooms": [
+  {
+   "id": "r307",
+   "number": "307",
+   "name": "Classroom 1",
+   "zone": "Lecture and learning",
+   "bookable": true,
+   "points": [
+    [
+     1403,
+     3211
+    ],
+    [
+     2539,
+     3211
+    ],
+    [
+     2539,
+     4417
+    ],
+    [
+     1403,
+     4417
+    ]
+   ]
+  },
+  {
+   "id": "r308",
+   "number": "308",
+   "name": "Classroom 2",
+   "zone": "Lecture and learning",
+   "bookable": true,
+   "points": [
+    [
+     1403,
+     1985
+    ],
+    [
+     2539,
+     1985
+    ],
+    [
+     2539,
+     3196
+    ],
+    [
+     1403,
+     3196
+    ]
+   ]
+  },
+  {
+   "id": "r315",
+   "number": "315",
+   "name": "Studio",
+   "zone": "Open studio space",
+   "bookable": true,
+   "points": [
+    [
+     1395,
+     494
+    ],
+    [
+     3819,
+     494
+    ],
+    [
+     3819,
+     1970
+    ],
+    [
+     2655,
+     1970
+    ],
+    [
+     2655,
+     1980
+    ],
+    [
+     1395,
+     1980
+    ]
+   ]
+  },
+  {
+   "id": "r316",
+   "number": "316",
+   "name": "Phone Booth",
+   "zone": "Breakout: individual",
+   "bookable": true,
+   "points": [
+    [
+     951,
+     1377
+    ],
+    [
+     1382,
+     1377
+    ],
+    [
+     1382,
+     1663
+    ],
+    [
+     951,
+     1663
+    ]
+   ]
+  },
+  {
+   "id": "r310",
+   "number": "310",
+   "name": "Video",
+   "zone": "Breakout: semi-private",
+   "bookable": true,
+   "points": [
+    [
+     2718,
+     3082
+    ],
+    [
+     3160,
+     3082
+    ],
+    [
+     3160,
+     3544
+    ],
+    [
+     2718,
+     3544
+    ]
+   ]
+  },
+  {
+   "id": "r311",
+   "number": "311",
+   "name": "Video",
+   "zone": "Breakout: semi-private",
+   "bookable": true,
+   "points": [
+    [
+     2692,
+     2585
+    ],
+    [
+     3160,
+     2585
+    ],
+    [
+     3160,
+     3050
+    ],
+    [
+     2692,
+     3050
+    ]
+   ]
+  },
+  {
+   "id": "r314",
+   "number": "314",
+   "name": "Video",
+   "zone": "Breakout: semi-private",
+   "bookable": true,
+   "points": [
+    [
+     3393,
+     2302
+    ],
+    [
+     3825,
+     2302
+    ],
+    [
+     3825,
+     2754
+    ],
+    [
+     3482,
+     2754
+    ],
+    [
+     3393,
+     2676
+    ]
+   ]
+  },
+  {
+   "id": "r309",
+   "number": "309",
+   "name": "Office",
+   "zone": "Admin",
+   "bookable": "maybe",
+   "points": [
+    [
+     2692,
+     3575
+    ],
+    [
+     3170,
+     3575
+    ],
+    [
+     3170,
+     4240
+    ],
+    [
+     2692,
+     4240
+    ]
+   ]
+  },
+  {
+   "id": "r312o",
+   "number": "312",
+   "name": "Office",
+   "zone": "Admin",
+   "bookable": "maybe",
+   "points": [
+    [
+     2692,
+     2188
+    ],
+    [
+     3170,
+     2188
+    ],
+    [
+     3170,
+     2562
+    ],
+    [
+     2692,
+     2562
+    ]
+   ]
+  },
+  {
+   "id": "r305",
+   "number": "305",
+   "name": "Lounge",
+   "zone": "Lounge",
+   "bookable": "maybe",
+   "points": [
+    [
+     1403,
+     4433
+    ],
+    [
+     3378,
+     4433
+    ],
+    [
+     3378,
+     4469
+    ],
+    [
+     3710,
+     4469
+    ],
+    [
+     3710,
+     5061
+    ],
+    [
+     1403,
+     5061
+    ]
+   ]
+  },
+  {
+   "id": "r301",
+   "number": "301",
+   "name": "Gallery",
+   "zone": "Lounge",
+   "bookable": "maybe",
+   "points": [
+    [
+     951,
+     2692
+    ],
+    [
+     1377,
+     2692
+    ],
+    [
+     1377,
+     4048
+    ],
+    [
+     951,
+     4048
+    ]
+   ]
+  },
+  {
+   "id": "r300",
+   "number": "300",
+   "name": "Elevator Lobby",
+   "zone": "Entry / exit",
+   "bookable": false,
+   "points": [
+    [
+     577,
+     2702
+    ],
+    [
+     941,
+     2702
+    ],
+    [
+     941,
+     4043
+    ],
+    [
+     577,
+     4043
+    ]
+   ]
+  },
+  {
+   "id": "r303",
+   "number": "303",
+   "name": "Reception / Waiting",
+   "zone": "Entry / exit",
+   "bookable": false,
+   "points": [
+    [
+     561,
+     4059
+    ],
+    [
+     1403,
+     4059
+    ],
+    [
+     1403,
+     5061
+    ],
+    [
+     120,
+     5061
+    ],
+    [
+     120,
+     4251
+    ],
+    [
+     561,
+     4251
+    ]
+   ]
+  },
+  {
+   "id": "r304",
+   "number": "304",
+   "name": "Coat",
+   "zone": "Entry / exit",
+   "bookable": false,
+   "points": [
+    [
+     146,
+     3788
+    ],
+    [
+     551,
+     3788
+    ],
+    [
+     551,
+     4230
+    ],
+    [
+     146,
+     4230
+    ]
+   ]
+  },
+  {
+   "id": "r317",
+   "number": "317",
+   "name": "Server",
+   "zone": "Admin",
+   "bookable": false,
+   "points": [
+    [
+     951,
+     1003
+    ],
+    [
+     1356,
+     1003
+    ],
+    [
+     1356,
+     1362
+    ],
+    [
+     951,
+     1362
+    ]
+   ]
+  },
+  {
+   "id": "r302",
+   "number": "302",
+   "name": "Closet",
+   "zone": "Admin",
+   "bookable": false,
+   "points": [
+    [
+     951,
+     1975
+    ],
+    [
+     1377,
+     1975
+    ],
+    [
+     1377,
+     2681
+    ],
+    [
+     951,
+     2681
+    ]
+   ]
+  },
+  {
+   "id": "r306",
+   "number": "306",
+   "name": "Pantry",
+   "zone": "Food prep",
+   "bookable": false,
+   "points": [
+    [
+     3388,
+     3962
+    ],
+    [
+     3825,
+     3962
+    ],
+    [
+     3825,
+     4448
+    ],
+    [
+     3388,
+     4448
+    ]
+   ]
+  },
+  {
+   "id": "r312w",
+   "number": "312",
+   "name": "Women",
+   "zone": "Bio breaks",
+   "bookable": false,
+   "points": [
+    [
+     120,
+     993
+    ],
+    [
+     722,
+     993
+    ],
+    [
+     722,
+     1642
+    ],
+    [
+     120,
+     1642
+    ]
+   ]
+  },
+  {
+   "id": "r3121",
+   "number": "3121",
+   "name": "Men",
+   "zone": "Bio breaks",
+   "bookable": false,
+   "points": [
+    [
+     120,
+     1663
+    ],
+    [
+     722,
+     1663
+    ],
+    [
+     722,
+     2167
+    ],
+    [
+     120,
+     2167
+    ]
+   ]
+  }
+ ]
+}

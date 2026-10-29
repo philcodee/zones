@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3rd Floor Rooms</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="masthead">
+    <div class="title">
+      <span class="kicker">3rd Floor</span>
+      <h1>Room Booking</h1>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Input source">
+        <button data-source="sim" aria-pressed="true">Simulate</button>
+        <button data-source="camera" aria-pressed="false">Camera</button>
+      </div>
+      <label class="check"><input type="checkbox" id="includeMaybe"> Include “maybe” rooms</label>
+      <button id="rotate" title="Rotate map to match the table">Rotate 90°</button>
+      <button id="editRooms" aria-pressed="false">Edit rooms</button>
+      <button id="projector" class="primary">Projector view</button>
+    </div>
+    <time id="clock" class="clock"></time>
+  </header>
+
+  <main class="layout">
+    <section class="mapwrap" aria-label="Floor plan status">
+      <div id="stage" class="stage">
+        <svg id="map" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <g id="rot">
+            <rect id="planBounds" class="plan-bounds"></rect>
+            <image id="planImage" class="plan-image" preserveAspectRatio="none"></image>
+            <g id="rooms"></g>
+            <g id="tokens"></g>
+            <g id="handles"></g>
+          </g>
+        </svg>
+      </div>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      <ul class="legend">
+        <li><i class="sw available"></i>Available</li>
+        <li><i class="sw booked"></i>Booked</li>
+        <li><i class="sw inactive"></i>Not bookable</li>
+      </ul>
+      <div id="pins" class="pins" hidden></div>
+      <p id="projHint" class="proj-hint">A — align to paper (drag the 4 dots) &nbsp;·&nbsp; R — reset alignment &nbsp;·&nbsp; Esc — exit</p>
+    </section>
+
+    <aside class="side">
+      <section id="simPanel" class="panel">
+        <h2>Tokens</h2>
+        <p class="note">Drag a token onto a room and let go. It books after 1 second still. Drag it off the map to lift it.</p>
+        <div id="tray" class="tray"></div>
+      </section>
+
+      <section id="camPanel" class="panel" hidden>
+        <h2>Camera</h2>
+        <div class="row">
+          <select id="camSelect" aria-label="Camera"></select>
+          <button id="camStart">Start</button>
+          <button id="camLock" title="Lock focus and exposure if the camera allows it">Lock</button>
+        </div>
+        <div class="row">
+          <button id="camRecal" title="Forget the corner positions and find them again">Recalibrate</button>
+        </div>
+        <div class="cam">
+          <video id="video" playsinline muted></video>
+          <canvas id="overlay"></canvas>
+        </div>
+        <p id="camStatus" class="status mono">Camera off</p>
+      </section>
+
+      <section id="editPanel" class="panel" hidden>
+        <h2>Edit rooms</h2>
+        <p class="note">Drag the corner dots to fit each room to the plan. Edits save in this browser.</p>
+        <div class="row">
+          <button id="roomsDownload">Download rooms.json</button>
+          <button id="roomsReset">Reset</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Rooms <span id="counts" class="counts mono"></span></h2>
+        <ol id="roomList" class="roomlist"></ol>
+      </section>
+
+      <section class="panel">
+        <h2>Log</h2>
+        <ol id="log" class="log mono"></ol>
+      </section>
+    </aside>
+  </main>
+
+  <div id="ghost" class="token-ghost" hidden></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
