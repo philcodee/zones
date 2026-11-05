@@ -1,0 +1,12 @@
+{
+  "sheet": { "w": 3300, "h": 5100, "dpi": 300, "image": "assets/sheet-11x17.jpg" },
+  "zones": [
+    { "id": "A", "name": "Zone A", "color": "#2f7de1", "points": [[1041, 1856], [2060, 1856], [2060, 2945], [1041, 2945]] },
+    { "id": "B", "name": "Zone B", "color": "#e0662f", "points": [[1041, 2945], [2060, 2945], [2060, 4010], [1041, 4010]] }
+  ],
+  "nextToInches": 1.0,
+  "adjacentInches": 1.5,
+  "holdMs": 300,
+  "missingMs": 3000,
+  "tokenNames": {}
+}

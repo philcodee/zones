@@ -3,6 +3,14 @@
   publish = "prototype"
   command = ""
 
+# Land on the audio-cue zones page. force = true is needed because index.html
+# exists and would otherwise shadow the rule. index.html stays reachable directly.
+[[redirects]]
+  from = "/"
+  to = "/zones.html"
+  status = 200
+  force = true
+
 # Allow camera access on this origin (Netlify serves HTTPS, which getUserMedia requires).
 [[headers]]
   for = "/*"

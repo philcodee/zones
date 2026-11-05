@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zone Relations</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .zl { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 16px; padding: 16px; flex: 1; min-height: 0; }
+    @media (max-width: 960px) { .zl { grid-template-columns: 1fr; } }
+    .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .bar label { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); }
+    .view { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .camstage { position: relative; background: #111; border: 1px solid var(--ink); aspect-ratio: 16 / 9; width: 100%; }
+    .camstage video, .camstage canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    .camstage .empty { position: absolute; inset: 0; display: grid; place-items: center; color: #bbb; text-align: center; padding: 24px; }
+    .side { display: flex; flex-direction: column; gap: 12px; overflow: auto; }
+    .panel { background: var(--sheet); border: 1px solid var(--rule); padding: 12px; }
+    .panel h2 { margin: 0 0 8px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+    .mapbox { display: grid; place-items: center; }
+    #map { width: 100%; max-height: 520px; background: #fff; border: 1px solid var(--ink); touch-action: none; }
+    #map .zone { fill-opacity: .16; stroke-width: 18; }
+    #map .tok circle.body { stroke: #111; stroke-width: 10; }
+    #map .tok.test { cursor: grab; }
+    #map .tok text { font: 600 90px var(--sans); fill: #fff; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+    #map .ring { fill: none; stroke-width: 14; stroke-dasharray: 30 22; }
+    #map .adj { stroke: #111; stroke-width: 14; stroke-dasharray: 8 20; stroke-linecap: round; }
+    #map .zlabel { font: 700 150px var(--sans); text-anchor: middle; dominant-baseline: central; opacity: .55; pointer-events: none; }
+    .now { margin: 0; padding: 0; list-style: none; font-size: 13px; }
+    .now li { padding: 6px 0; border-top: 1px solid var(--rule); }
+    .now li:first-child { border-top: 0; }
+    .now b { font-weight: 600; }
+    .pill { display: inline-block; padding: 0 6px; border-radius: 9px; color: #fff; font-size: 11px; font-weight: 600; margin-right: 4px; }
+    .muted { color: var(--muted); }
+    .log { margin: 0; padding: 0; list-style: none; font: 12px/1.45 var(--mono); max-height: 260px; overflow: auto; }
+    .log li { padding: 2px 0; }
+    .log time { color: var(--muted); margin-right: 8px; }
+    .set { display: grid; grid-template-columns: 1fr 120px 48px; gap: 6px 8px; align-items: center; font-size: 12px; }
+    .set output { font: 12px var(--mono); text-align: right; }
+    .note { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="title">
+      <span class="kicker">11 × 17 sheet · in / out · next to · adjacent</span>
+      <h1>Zone Relations</h1>
+    </div>
+    <div class="controls bar">
+      <select id="camSelect" aria-label="Camera"></select>
+      <button id="start" class="primary">Start camera</button>
+      <button id="recal" title="Find the corner tags again">Recalibrate</button>
+    </div>
+  </header>
+
+  <main class="zl">
+    <section class="view">
+      <div class="camstage" id="stage">
+        <video id="video" playsinline muted></video>
+        <canvas id="overlay"></canvas>
+        <div class="empty" id="empty">Start the camera, or add test tokens on the sheet map and drag them around.</div>
+      </div>
+      <span id="status" class="status mono">Camera off</span>
+    </section>
+
+    <aside class="side">
+      <section class="panel">
+        <h2>Sheet map <span class="bar"><button id="rotate" title="Turn the map to match the camera">Rotate 90°</button></span></h2>
+        <div class="mapbox"><svg id="map" xmlns="http://www.w3.org/2000/svg"><g id="rot"></g></svg></div>
+        <div class="bar" style="margin-top:8px">
+          <button id="addTest">Add test token</button>
+          <button id="clearTest">Clear test tokens</button>
+        </div>
+        <p class="note">Drag test tokens to try the rules without the camera. Drag one off the sheet to remove it.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Right now</h2>
+        <ul id="zonesNow" class="now"></ul>
+        <ul id="now" class="now" style="margin-top:8px"></ul>
+      </section>
+
+      <section class="panel">
+        <h2>Audio</h2>
+        <div class="bar">
+          <label><input type="checkbox" id="speech"> Speak events</label>
+          <label><input type="checkbox" id="tones"> Tones</label>
+        </div>
+        <div class="set" style="margin-top:8px">
+          <label for="voice">Voice</label>
+          <select id="voice" style="grid-column: span 2; min-width: 0"></select>
+          <label for="rate">Speed</label>
+          <input type="range" id="rate" min="0.6" max="2" step="0.1">
+          <output id="rateOut"></output>
+        </div>
+        <div class="bar" style="margin-top:8px">
+          <button id="sayStatus">Say status <kbd>S</kbd></button>
+          <button id="testSound">Test sound</button>
+        </div>
+        <p id="lastSaid" class="note mono">Said: —</p>        <p class="note">Tones: rising = entered a zone, falling = left a zone, single high = placed, low = removed, double blip = next to each other / apart, short tick = next to / away from a zone. Press <b>S</b> anytime to hear what’s where, <b>Q</b> to stop talking.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Events <button id="clearLog">Clear</button></h2>
+        <ol id="log" class="log"></ol>
+      </section>
+
+      <section class="panel">
+        <h2>Rules</h2>
+        <div class="set">
+          <label for="nextTo">“Next to” a zone within</label>
+          <input type="range" id="nextTo" min="0.25" max="3" step="0.25">
+          <output id="nextToOut"></output>
+          <label for="adjacent">Tokens “next to each other” within</label>
+          <input type="range" id="adjacent" min="0.5" max="4" step="0.25">
+          <output id="adjacentOut"></output>
+          <label for="missing">Count as removed after hidden for</label>
+          <input type="range" id="missing" min="0.5" max="10" step="0.5">
+          <output id="missingOut"></output>
+        </div>
+        <p class="note">Distances are on the paper, measured centre to centre for tokens, and from a token’s centre to the zone outline for “next to” a zone. A change counts once it has held for 0.3 s. A covered token keeps its place (shown faded on the map) until it has been hidden longer than the removal time; raise that if hands covering tags trigger “removed”.</p>
+      </section>
+    </aside>
+  </main>
+
+  <script type="module" src="zones.js"></script>
+</body>
+</html>
