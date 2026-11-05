@@ -6,17 +6,53 @@
   <title>Zone Relations</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .zl { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 16px; padding: 16px; flex: 1; min-height: 0; }
+    /* Dark, all-mono theme for this page only (style.css is shared with index.html). */
+    @font-face {
+      font-family: "W95FA";
+      src: url("assets/fonts/w95fa.woff2") format("woff2"), url("assets/fonts/w95fa.woff") format("woff");
+      font-display: swap;
+    }
+    :root {
+      color-scheme: dark;
+      --paper: #111214;
+      --sheet: #1b1d20;
+      --ink: #e6e4df;
+      --muted: #9b978e;
+      --rule: #2e3135;
+      --sans: var(--mono);
+    }
+    body { font: 13px/1.5 var(--mono); }
+    button, select { padding: 8px 14px; background: var(--sheet); }
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      padding-right: 40px;
+      background: var(--sheet) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23e6e4df' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 14px center;
+    }
+    button, select { border-radius: 4px; }
+    button:hover { background: #2a2d31; }
+    select:hover { background-color: #2a2d31; }
+    button[aria-pressed="true"]:hover, button.primary:hover { background: #fff; }
+    input[type="range"] { accent-color: var(--ink); }
+    kbd { font: 11px var(--mono); padding: 1px 5px; border: 1px solid var(--muted); border-radius: 3px; margin-left: 4px; }
+    .masthead { padding: 20px 28px 18px; gap: 28px; align-items: center; }
+    h1 { font: 400 28px/1 "W95FA", var(--mono); letter-spacing: 0; }
+    .status { padding: 4px 2px; }
+
+    .zl { display: grid; grid-template-columns: minmax(0, 1fr) 440px; gap: 24px; padding: 24px 28px; flex: 1; min-height: 0; }
     @media (max-width: 960px) { .zl { grid-template-columns: 1fr; } }
-    .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-    .bar label { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); }
-    .view { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    body.side-hidden .zl { grid-template-columns: minmax(0, 1fr); }
+    body.side-hidden .side { display: none; }
+    #sideToggle { margin-left: auto; }
+    .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .bar label { display: inline-flex; gap: 8px; align-items: center; color: var(--muted); }
+    .view { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
     .camstage { position: relative; background: #111; border: 1px solid var(--ink); aspect-ratio: 16 / 9; width: 100%; }
     .camstage video, .camstage canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
     .camstage .empty { position: absolute; inset: 0; display: grid; place-items: center; color: #bbb; text-align: center; padding: 24px; }
-    .side { display: flex; flex-direction: column; gap: 12px; overflow: auto; }
-    .panel { background: var(--sheet); border: 1px solid var(--rule); padding: 12px; }
-    .panel h2 { margin: 0 0 8px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+    .side { display: flex; flex-direction: column; gap: 16px; overflow: auto; border-left: 0; background: none; }
+    .panel { background: var(--sheet); border: 1px solid var(--rule); padding: 18px 20px; }
+    .panel h2 { margin: 0 0 14px; gap: 12px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
     .mapbox { display: grid; place-items: center; }
     #map { width: 100%; max-height: 520px; background: #fff; border: 1px solid var(--ink); touch-action: none; }
     #map .zone { fill-opacity: .16; stroke-width: 18; }
@@ -27,29 +63,29 @@
     #map .adj { stroke: #111; stroke-width: 14; stroke-dasharray: 8 20; stroke-linecap: round; }
     #map .zlabel { font: 700 150px var(--sans); text-anchor: middle; dominant-baseline: central; opacity: .55; pointer-events: none; }
     .now { margin: 0; padding: 0; list-style: none; font-size: 13px; }
-    .now li { padding: 6px 0; border-top: 1px solid var(--rule); }
+    .now li { padding: 9px 0; border-top: 1px solid var(--rule); }
     .now li:first-child { border-top: 0; }
     .now b { font-weight: 600; }
-    .pill { display: inline-block; padding: 0 6px; border-radius: 9px; color: #fff; font-size: 11px; font-weight: 600; margin-right: 4px; }
+    .pill { display: inline-block; padding: 1px 8px; border-radius: 9px; color: #fff; font-size: 11px; font-weight: 600; margin-right: 4px; }
     .muted { color: var(--muted); }
     .log { margin: 0; padding: 0; list-style: none; font: 12px/1.45 var(--mono); max-height: 260px; overflow: auto; }
-    .log li { padding: 2px 0; }
+    .log li { padding: 4px 0; }
     .log time { color: var(--muted); margin-right: 8px; }
-    .set { display: grid; grid-template-columns: 1fr 120px 48px; gap: 6px 8px; align-items: center; font-size: 12px; }
+    .set { display: grid; grid-template-columns: 1fr 120px 52px; gap: 10px 12px; align-items: center; font-size: 12px; }
+    .set .wide { grid-column: span 2; min-width: 0; }
     .set output { font: 12px var(--mono); text-align: right; }
-    .note { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+    .note { font-size: 12px; color: var(--muted); margin: 12px 0 0; }
+    .mt { margin-top: 10px; }
   </style>
 </head>
 <body>
   <header class="masthead">
-    <div class="title">
-      <span class="kicker">11 × 17 sheet · in / out · next to · adjacent</span>
-      <h1>Zone Relations</h1>
-    </div>
+    <h1>Zone Relations</h1>
     <div class="controls bar">
       <select id="camSelect" aria-label="Camera"></select>
       <button id="start" class="primary">Start camera</button>
       <button id="recal" title="Find the corner tags again">Recalibrate</button>
+      <button id="sideToggle" aria-controls="side" aria-expanded="true">Hide panel</button>
     </div>
   </header>
 
@@ -60,14 +96,14 @@
         <canvas id="overlay"></canvas>
         <div class="empty" id="empty">Start the camera, or add test tokens on the sheet map and drag them around.</div>
       </div>
-      <span id="status" class="status mono">Camera off</span>
+      <span id="status" class="status">Camera off</span>
     </section>
 
-    <aside class="side">
+    <aside class="side" id="side">
       <section class="panel">
         <h2>Sheet map <span class="bar"><button id="rotate" title="Turn the map to match the camera">Rotate 90°</button></span></h2>
         <div class="mapbox"><svg id="map" xmlns="http://www.w3.org/2000/svg"><g id="rot"></g></svg></div>
-        <div class="bar" style="margin-top:8px">
+        <div class="bar mt">
           <button id="addTest">Add test token</button>
           <button id="clearTest">Clear test tokens</button>
         </div>
@@ -77,7 +113,7 @@
       <section class="panel">
         <h2>Right now</h2>
         <ul id="zonesNow" class="now"></ul>
-        <ul id="now" class="now" style="margin-top:8px"></ul>
+        <ul id="now" class="now mt"></ul>
       </section>
 
       <section class="panel">
@@ -86,18 +122,19 @@
           <label><input type="checkbox" id="speech"> Speak events</label>
           <label><input type="checkbox" id="tones"> Tones</label>
         </div>
-        <div class="set" style="margin-top:8px">
+        <div class="set mt">
           <label for="voice">Voice</label>
-          <select id="voice" style="grid-column: span 2; min-width: 0"></select>
+          <select id="voice" class="wide"></select>
           <label for="rate">Speed</label>
           <input type="range" id="rate" min="0.6" max="2" step="0.1">
           <output id="rateOut"></output>
         </div>
-        <div class="bar" style="margin-top:8px">
+        <div class="bar mt">
           <button id="sayStatus">Say status <kbd>S</kbd></button>
           <button id="testSound">Test sound</button>
         </div>
-        <p id="lastSaid" class="note mono">Said: —</p>        <p class="note">Tones: rising = entered a zone, falling = left a zone, single high = placed, low = removed, double blip = next to each other / apart, short tick = next to / away from a zone. Press <b>S</b> anytime to hear what’s where, <b>Q</b> to stop talking.</p>
+        <p id="lastSaid" class="note">Said: —</p>
+        <p class="note">Tones: rising = entered a zone, falling = left a zone, single high = placed, low = removed, double blip = next to each other / apart, short tick = next to / away from a zone. Press <b>S</b> anytime to hear what’s where, <b>Q</b> to stop talking.</p>
       </section>
 
       <section class="panel">

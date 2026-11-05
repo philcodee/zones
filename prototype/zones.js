@@ -84,7 +84,7 @@ function drawOverlay(fit) {
     octx.lineWidth = lw * 1.5; octx.strokeStyle = z.color; octx.stroke();
     const c = z.points.reduce((a, p) => [a[0] + p[0] / z.points.length, a[1] + p[1] / z.points.length], [0, 0]);
     const [cx, cy] = P(c);
-    octx.font = `700 ${lw * 14}px Helvetica, Arial, sans-serif`; octx.fillStyle = z.color; octx.textAlign = 'center';
+    octx.font = `700 ${lw * 14}px ui-monospace, "SF Mono", Menlo, monospace`; octx.fillStyle = z.color; octx.textAlign = 'center';
     octx.fillText(z.name, cx, cy);
   }
   const snap = Object.fromEntries(tracker.snapshot().map((s) => [s.id, s]));
@@ -96,7 +96,7 @@ function drawOverlay(fit) {
       octx.beginPath(); m.corners.forEach(([x, y], i) => (i ? octx.lineTo(x, y) : octx.moveTo(x, y))); octx.closePath();
       octx.lineWidth = lw * 2; octx.strokeStyle = col; octx.stroke();
     }
-    octx.font = `600 ${lw * 9}px Helvetica, Arial, sans-serif`; octx.fillStyle = col;
+    octx.font = `600 ${lw * 9}px ui-monospace, "SF Mono", Menlo, monospace`; octx.fillStyle = col;
     octx.fillText(`${tracker.name(String(t.id))}${s ? ' · ' + (s.zone ? zoneById[s.zone].name : 'out') : ''}`, t.cam[0] + lw * 12, t.cam[1]);
   }
 }
@@ -261,6 +261,17 @@ function bindRange(id, key, optKey) {
   r.value = tracker.opts[optKey];
   out.value = `${r.value}″`;
   r.oninput = () => { tracker.opts[optKey] = Number(r.value); out.value = `${r.value}″`; store.set(key, Number(r.value)); };
+}
+{
+  const btn = $('#sideToggle');
+  const show = (open) => {
+    document.body.classList.toggle('side-hidden', !open);
+    btn.setAttribute('aria-expanded', String(open));
+    btn.textContent = open ? 'Hide panel' : 'Show panel';
+    store.set('sideOpen', open);
+  };
+  show(store.get('sideOpen', true));
+  btn.onclick = () => show(btn.getAttribute('aria-expanded') !== 'true');
 }
 bindRange('nextTo', 'nextTo', 'nextToInches');
 bindRange('adjacent', 'adjacent', 'adjacentInches');

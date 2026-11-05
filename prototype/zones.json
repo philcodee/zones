@@ -4,9 +4,9 @@
     { "id": "A", "name": "Zone A", "color": "#2f7de1", "points": [[1041, 1856], [2060, 1856], [2060, 2945], [1041, 2945]] },
     { "id": "B", "name": "Zone B", "color": "#e0662f", "points": [[1041, 2945], [2060, 2945], [2060, 4010], [1041, 4010]] }
   ],
-  "nextToInches": 1.0,
-  "adjacentInches": 1.5,
+  "nextToInches": 1.5,
+  "adjacentInches": 3.75,
   "holdMs": 300,
-  "missingMs": 3000,
+  "missingMs": 4500,
   "tokenNames": {}
 }
