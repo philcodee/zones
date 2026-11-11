@@ -1,12 +1,69 @@
 {
-  "sheet": { "w": 3300, "h": 5100, "dpi": 300, "image": "assets/sheet-11x17.jpg" },
+  "sheet": {
+    "w": 3300,
+    "h": 5100,
+    "dpi": 300,
+    "image": "assets/sheet-11x17.jpg"
+  },
   "zones": [
-    { "id": "A", "name": "Zone A", "color": "#2f7de1", "points": [[1041, 1856], [2060, 1856], [2060, 2945], [1041, 2945]] },
-    { "id": "B", "name": "Zone B", "color": "#e0662f", "points": [[1041, 2945], [2060, 2945], [2060, 4010], [1041, 4010]] }
+    {
+      "id": "A",
+      "name": "Zone A",
+      "color": "#2f7de1",
+      "points": [[1041, 1856], [2060, 1856], [2060, 2945], [1041, 2945]]
+    },
+    {
+      "id": "B",
+      "name": "Zone B",
+      "color": "#e0662f",
+      "points": [[1041, 2945], [2060, 2945], [2060, 4010], [1041, 4010]]
+    }
   ],
   "nextToInches": 1.5,
   "adjacentInches": 3.75,
   "holdMs": 300,
   "missingMs": 4500,
-  "tokenNames": {}
+  "tokenNames": {},
+  "walls": [
+    {
+      "id": "outer",
+      "name": "the wall",
+      "points": [[1005, 499], [1004, 1614], [675, 1614], [675, 999], [446, 999], [446, 2525], [287, 2525], [287, 4047], [735, 4047], [735, 4599], [3207, 4599], [3207, 3435], [2763, 3435], [2763, 2115], [3200, 2115], [3200, 499]]
+    }
+  ],
+  "easterEggs": [
+    {
+      "id": "spatial-pixel-lab",
+      "name": "Spatial Pixel Lab",
+      "points": [[2763, 2115], [3207, 2115], [3207, 2423], [2763, 2423]]
+    }
+  ],
+  "pointers": {
+    "40": {
+      "name": "Pointer 1",
+      "pitch": 3500,
+      "offsetDeg": 0
+    },
+    "41": {
+      "name": "Pointer 2",
+      "pitch": 1600,
+      "offsetDeg": 0
+    }
+  },
+  "sonar": {
+    "beamDeg": 2,
+    "nearInches": 0.5,
+    "farInches": 19,
+    "fastMs": 50,
+    "slowMs": 2000,
+    "padReachInches": 12,
+    "padCurve": 5.25
+  },
+  "mix": {
+    "master": 1,
+    "speech": 1,
+    "tones": 0.79,
+    "ticks": 0.55,
+    "pad": 0.84
+  }
 }

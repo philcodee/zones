@@ -3,8 +3,8 @@
   publish = "prototype"
   command = ""
 
-# Land on the audio-cue zones page. force = true is needed because index.html
-# exists and would otherwise shadow the rule. index.html stays reachable directly.
+# Land on the audio-cue zones page. The old room-booking app lives in
+# archive/room-booking/ and is not deployed.
 [[redirects]]
   from = "/"
   to = "/zones.html"
@@ -18,7 +18,7 @@
     Permissions-Policy = "camera=(self)"
     X-Content-Type-Options = "nosniff"
 
-# Always fetch fresh config so edits to plan.json / rooms.json show up on the next load.
+# Always fetch fresh config so edits to zones.json show up on the next load.
 [[headers]]
   for = "/*.json"
   [headers.values]

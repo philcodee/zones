@@ -6,7 +6,7 @@
   <title>Zone Relations</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Dark, all-mono theme for this page only (style.css is shared with index.html). */
+    /* Dark, all-mono theme for this page only (style.css is shared with calibrate.html). */
     @font-face {
       font-family: "W95FA";
       src: url("assets/fonts/w95fa.woff2") format("woff2"), url("assets/fonts/w95fa.woff") format("woff");
@@ -61,6 +61,11 @@
     #map .tok text { font: 600 90px var(--sans); fill: #fff; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
     #map .ring { fill: none; stroke-width: 14; stroke-dasharray: 30 22; }
     #map .adj { stroke: #111; stroke-width: 14; stroke-dasharray: 8 20; stroke-linecap: round; }
+    #map .wall { fill: none; stroke: #e0a800; stroke-width: 10; stroke-dasharray: 40 30; opacity: .6; pointer-events: none; }
+    #map .beam { stroke: #888; stroke-width: 12; stroke-dasharray: 30 30; stroke-linecap: round; }
+    #map .beam.on { stroke: #e0a800; stroke-dasharray: none; }
+    #map .beamhit { fill: #e0a800; stroke: #111; stroke-width: 8; }
+    #map .nose { fill: #111; }
     #map .zlabel { font: 700 150px var(--sans); text-anchor: middle; dominant-baseline: central; opacity: .55; pointer-events: none; }
     .now { margin: 0; padding: 0; list-style: none; font-size: 13px; }
     .now li { padding: 9px 0; border-top: 1px solid var(--rule); }
@@ -73,6 +78,8 @@
     .log time { color: var(--muted); margin-right: 8px; }
     .set { display: grid; grid-template-columns: 1fr 120px 52px; gap: 10px 12px; align-items: center; font-size: 12px; }
     .set .wide { grid-column: span 2; min-width: 0; }
+    .set.mix { grid-template-columns: 1fr 140px 44px auto; }
+    .set.mix button { padding: 4px 10px; }
     .set output { font: 12px var(--mono); text-align: right; }
     .note { font-size: 12px; color: var(--muted); margin: 12px 0 0; }
     .mt { margin-top: 10px; }
@@ -105,9 +112,10 @@
         <div class="mapbox"><svg id="map" xmlns="http://www.w3.org/2000/svg"><g id="rot"></g></svg></div>
         <div class="bar mt">
           <button id="addTest">Add test token</button>
+          <button id="addPointer">Add test pointer</button>
           <button id="clearTest">Clear test tokens</button>
         </div>
-        <p class="note">Drag test tokens to try the rules without the camera. Drag one off the sheet to remove it.</p>
+        <p class="note">Drag test tokens to try the rules without the camera. Drag one off the sheet to remove it. Turn a test pointer with the mouse wheel over it, or <kbd>[</kbd> <kbd>]</kbd> for the last one you touched.</p>
       </section>
 
       <section class="panel">
@@ -121,6 +129,7 @@
         <div class="bar">
           <label><input type="checkbox" id="speech"> Speak events</label>
           <label><input type="checkbox" id="tones"> Tones</label>
+          <label><input type="checkbox" id="sonarOn"> Pointer clicks</label>
         </div>
         <div class="set mt">
           <label for="voice">Voice</label>
@@ -134,7 +143,18 @@
           <button id="testSound">Test sound</button>
         </div>
         <p id="lastSaid" class="note">Said: —</p>
-        <p class="note">Tones: rising = entered a zone, falling = left a zone, single high = placed, low = removed, double blip = next to each other / apart, short tick = next to / away from a zone. Press <b>S</b> anytime to hear what’s where, <b>Q</b> to stop talking.</p>
+        <p class="note">Tones: rising = entered a zone, falling = left a zone, single high = placed, low = removed, double blip = next to each other / apart, short tick = next to / away from a zone. Pointer ticks: a steady tick while a pointer tag aims at a zone or the outer wall — faster = closer; each pointer has its own tone. Press <b>S</b> anytime to hear what’s where, <b>Q</b> to stop talking.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Mixer</h2>
+        <div id="mixer" class="set mix"></div>
+        <div class="bar mt">
+          <button id="copyDefaults">Copy JSON</button>
+          <button id="saveDefaults">Save to zones.json…</button>
+          <button id="resetDefaults" title="Forget this browser's changes and reload the defaults from zones.json">Reset to defaults</button>
+        </div>
+        <p id="saveMsg" class="note">Changes apply right away and are remembered in this browser. To make them the defaults for everyone, copy or save the settings into <code>prototype/zones.json</code>. That includes the mixer and the Rules settings below.</p>
       </section>
 
       <section class="panel">
@@ -154,8 +174,30 @@
           <label for="missing">Count as removed after hidden for</label>
           <input type="range" id="missing" min="0.5" max="10" step="0.5">
           <output id="missingOut"></output>
+          <label for="beamDeg">Pointer beam width</label>
+          <input type="range" id="beamDeg" min="2" max="30" step="1">
+          <output id="beamDegOut"></output>
+          <label for="nearInches">Fastest ticks within</label>
+          <input type="range" id="nearInches" min="0.25" max="4" step="0.25">
+          <output id="nearInchesOut"></output>
+          <label for="fastMs">Fastest tick speed</label>
+          <input type="range" id="fastMs" min="2" max="20" step="0.25">
+          <output id="fastMsOut"></output>
+          <label for="farInches">Slowest ticks at</label>
+          <input type="range" id="farInches" min="4" max="20" step="1">
+          <output id="farInchesOut"></output>
+          <label for="slowMs">Slowest tick speed</label>
+          <input type="range" id="slowMs" min="0.25" max="4" step="0.25">
+          <output id="slowMsOut"></output>
+          <label for="padReachInches">Easter egg reach</label>
+          <input type="range" id="padReachInches" min="1" max="20" step="0.5">
+          <output id="padReachInchesOut"></output>
+          <label for="padCurve">Easter egg swell steepness</label>
+          <input type="range" id="padCurve" min="0.5" max="6" step="0.25">
+          <output id="padCurveOut"></output>
         </div>
-        <p class="note">Distances are on the paper, measured centre to centre for tokens, and from a token’s centre to the zone outline for “next to” a zone. A change counts once it has held for 0.3 s. A covered token keeps its place (shown faded on the map) until it has been hidden longer than the removal time; raise that if hands covering tags trigger “removed”.</p>
+        <div id="pointerFacing" class="set mt"></div>
+        <p class="note">Distances are on the paper, measured centre to centre for tokens, and from a token’s centre to the zone outline for “next to” a zone. A change counts once it has held for 0.3 s. A covered token keeps its place (shown faded on the map) until it has been hidden longer than the removal time; raise that if hands covering tags trigger “removed”. Pointer distance is from the pointer tag’s front edge to where the beam first meets a zone edge or the outer wall (dashed yellow on the map). Zone edges stop the beam from inside as well as outside.</p>
       </section>
     </aside>
   </main>

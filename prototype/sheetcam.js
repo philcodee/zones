@@ -89,7 +89,11 @@ export class SheetCam {
 
     const tokens = !this.fit ? [] : this.markers
       .filter((m) => !CORNER_IDS.includes(m.id))
-      .map((m) => ({ id: m.id, cam: center(m.corners), pt: applyH(this.fit.toSheet, center(m.corners)), exact: m.exact }));
+      .map((m) => {
+        // corners[0] -> corners[1] is the tag's printed top edge; pointer tags use it as their heading.
+        const top = [(m.corners[0][0] + m.corners[1][0]) / 2, (m.corners[0][1] + m.corners[1][1]) / 2];
+        return { id: m.id, cam: center(m.corners), pt: applyH(this.fit.toSheet, center(m.corners)), top: applyH(this.fit.toSheet, top), exact: m.exact };
+      });
     this.onFrame({ tokens, markers: this.markers, fit: this.fit });
   }
 

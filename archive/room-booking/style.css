@@ -1,0 +1,283 @@
+:root {
+  --paper: #f3f0e8;
+  --sheet: #fbfaf6;
+  --ink: #161513;
+  --muted: #6f6b62;
+  --rule: #d9d3c5;
+  --avail: #24804f;
+  --avail-fill: rgba(36, 128, 79, 0.26);
+  --booked: #d63f26;
+  --booked-fill: rgba(214, 63, 38, 0.34);
+  --amber: #d4920f;
+  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font: 14px/1.4 var(--sans);
+  display: flex;
+  flex-direction: column;
+}
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+[hidden] { display: none !important; }
+
+button, select {
+  font: inherit;
+  color: var(--ink);
+  background: var(--sheet);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+button:hover { background: #fff; }
+button[aria-pressed="true"], button.primary { background: var(--ink); color: var(--paper); }
+button:disabled { opacity: 0.35; cursor: default; }
+:focus-visible { outline: 2px solid var(--booked); outline-offset: 2px; }
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  display: flex;
+  align-items: end;
+  gap: 24px;
+  padding: 16px 24px 14px;
+  border-bottom: 3px solid var(--ink);
+  flex-wrap: wrap;
+}
+.title { display: flex; flex-direction: column; }
+.kicker { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+h1 { margin: 0; font-size: 28px; line-height: 1; letter-spacing: -0.02em; font-weight: 700; }
+.controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; flex: 1; }
+.seg { display: inline-flex; }
+.seg button + button { border-left: 0; }
+.check { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.clock { font: 700 28px/1 var(--mono); letter-spacing: -0.02em; }
+
+/* ---------- layout ---------- */
+
+.layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+}
+.mapwrap {
+  position: relative;
+  min-height: 0;
+  padding: 20px 24px 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stage { width: 100%; height: 100%; }
+#map { width: 100%; height: 100%; display: block; overflow: visible; }
+
+.side {
+  border-left: 1px solid var(--ink);
+  overflow-y: auto;
+  background: var(--sheet);
+}
+.panel { padding: 16px 20px 18px; border-bottom: 1px solid var(--rule); }
+h2 {
+  margin: 0 0 10px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+}
+.counts { letter-spacing: 0; text-transform: none; color: var(--muted); font-weight: 400; }
+.note { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+.row { display: flex; gap: 8px; margin-bottom: 10px; }
+.row select { flex: 1; min-width: 0; }
+.status { margin: 8px 0 0; font-size: 12px; color: var(--muted); white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .mapwrap { height: 70vh; padding: 12px 16px 40px; }
+  .side { border-left: 0; border-top: 1px solid var(--ink); }
+}
+
+/* ---------- map ---------- */
+
+.plan-image { opacity: 0.42; }
+.plan-bounds { fill: #fff; }
+.room polygon { stroke-width: 10; stroke-linejoin: round; transition: fill 0.25s; }
+.room.available polygon { fill: var(--avail-fill); stroke: var(--avail); }
+.room.booked polygon { fill: var(--booked-fill); stroke: var(--booked); }
+.room.inactive polygon { fill: none; stroke: none; }
+.label text { text-anchor: middle; dominant-baseline: middle; fill: var(--ink); font-family: var(--sans); }
+.label .num { font-weight: 700; letter-spacing: -0.02em; }
+.label .name { text-transform: uppercase; letter-spacing: 0.08em; }
+.label .state { font-family: var(--mono); font-weight: 600; }
+.room.available .state { fill: var(--avail); }
+.room.booked .state { fill: var(--booked); }
+.room.inactive .label text { fill: var(--muted); opacity: 0.6; }
+
+.token { cursor: grab; }
+.token .chip { fill: var(--ink); stroke: #fff; stroke-width: 8; }
+.token .ring { fill: none; stroke: var(--amber); stroke-width: 22; stroke-linecap: round; }
+.token.holds .ring { stroke: var(--ink); }
+.token.blocked .ring, .token.spent .ring { stroke: var(--booked); stroke-dasharray: 30 30 !important; }
+.token.idle .ring { stroke: var(--muted); }
+.token text { fill: #fff; text-anchor: middle; dominant-baseline: middle; font-family: var(--mono); font-weight: 700; }
+.token .tnote { fill: var(--booked); font-family: var(--sans); font-weight: 700; paint-order: stroke; stroke: #fff; stroke-width: 14px; }
+.token.unseen { opacity: 0.3; }
+
+.handle { fill: #fff; stroke: var(--ink); stroke-width: 8; cursor: move; }
+body.editing .room polygon { stroke: var(--ink) !important; stroke-dasharray: 24 16; }
+body.editing .room.inactive polygon { fill: rgba(0, 0, 0, 0.05); }
+
+.legend {
+  position: absolute;
+  left: 24px;
+  bottom: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 18px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.legend li { display: flex; align-items: center; gap: 6px; }
+.sw { display: inline-block; width: 12px; height: 12px; border: 1.5px solid; flex: none; }
+.sw.available { background: var(--avail-fill); border-color: var(--avail); }
+.sw.booked { background: var(--booked-fill); border-color: var(--booked); }
+.sw.inactive { border-color: var(--rule); }
+
+.toast {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translate(-50%, -8px);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 16px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  max-width: calc(100% - 32px);
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.warn { background: var(--booked); }
+.toast.ok { background: var(--avail); }
+
+/* ---------- side panel lists ---------- */
+
+.tray { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.tray .chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 4px;
+  background: var(--ink);
+  color: var(--paper);
+  touch-action: none;
+  cursor: grab;
+}
+.tray .chip b { font: 700 18px/1 var(--mono); }
+.tray .chip span { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.75; margin-top: 4px; }
+
+.token-ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  margin: -22px 0 0 -22px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: var(--ink);
+  color: #fff;
+  font: 700 13px var(--mono);
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.6;
+}
+.token-ghost.over { opacity: 1; outline: 3px solid var(--amber); }
+
+.roomlist, .log { list-style: none; margin: 0; padding: 0; }
+.roomlist li {
+  display: grid;
+  grid-template-columns: 12px 44px 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  border-top: 1px solid var(--rule);
+}
+.roomlist li:first-child { border-top: 0; }
+.rnum { font-weight: 700; }
+.rstate { font-size: 12px; color: var(--muted); }
+.roomlist li.booked .rstate { color: var(--booked); }
+.roomlist .end { padding: 2px 8px; font-size: 12px; }
+
+.log { font-size: 12px; max-height: 220px; overflow-y: auto; }
+.log li { padding: 4px 0; border-top: 1px solid var(--rule); }
+.log li:first-child { border-top: 0; }
+.log .t { color: var(--muted); margin-right: 6px; }
+.log .booked { color: var(--avail); }
+.log .conflict, .log .not-bookable { color: var(--booked); }
+
+.cam { position: relative; background: #000; aspect-ratio: 16 / 9; }
+.cam video, .cam canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+
+/* ---------- projector ---------- */
+
+.proj-hint, .pins { display: none; }
+
+body.projector { background: #000; overflow: hidden; }
+body.projector .masthead,
+body.projector .side,
+body.projector .legend { display: none; }
+body.projector .layout { display: block; }
+body.projector .mapwrap { position: fixed; inset: 0; padding: 0; display: block; }
+body.projector .stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+body.projector .plan-image,
+body.projector .plan-bounds,
+body.projector .room.inactive,
+body.projector .token .chip,
+body.projector .token text:not(.tnote) { display: none; }
+/* Light, flat colour: the camera has to keep reading markers through it. */
+body.projector .room.available polygon { fill: #8fe0ad; stroke: #8fe0ad; }
+body.projector .room.booked polygon { fill: #ffa08c; stroke: #ffa08c; }
+body.projector .label text { fill: #000 !important; }
+body.projector .token .ring { stroke-width: 30; }
+body.projector.aligning .plan-bounds { display: block; fill: none; stroke: #fff; stroke-width: 12; }
+body.projector.aligning .room polygon { stroke: #fff; }
+
+body.projector .pins { display: block; position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+.pin {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  pointer-events: auto;
+  cursor: move;
+  touch-action: none;
+}
+body.projector .proj-hint {
+  display: block;
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  color: #fff;
+  font: 13px var(--mono);
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+body.projector .proj-hint.show, body.projector.aligning .proj-hint { opacity: 0.8; }
+body.projector .toast { top: 24px; }
